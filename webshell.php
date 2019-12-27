@@ -265,7 +265,6 @@
         $files = scandir($dir);
         $max_repo = sizeof($files);
         $i = 1;
-        $y = 0;
         echo '<center><font face="Cinzel" color="green" size="1"><h1 style="border:1px solid green;width: 50%;margin: auto;color: green;">Path '.$dir.'</h1></font></center>';
         for ($y = 0;$i <= $max_repo; $i++){
             echo '<pre style="border:1px solid green;width: 50%;margin: auto;color: green;">'.$files[$i].'<a style="position: absolute;right: 500px;color: yellow;" href="'.$files[$i].'">Download</a></pre>';
