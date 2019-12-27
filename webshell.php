@@ -246,7 +246,6 @@
 
         if(isset($_POST["upload"]))
         {
-            $dir = getcwd();
             $tmp = $_FILES["file"]["tmp_name"];
             $filename = $_FILES["file"]["name"];
             if (file_exists($filename)){
